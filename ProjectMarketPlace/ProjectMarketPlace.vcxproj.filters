@@ -19,4 +19,20 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="UserDatabase">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="ProductDatabase">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="Reciepts">
+      <Filter>Source Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
