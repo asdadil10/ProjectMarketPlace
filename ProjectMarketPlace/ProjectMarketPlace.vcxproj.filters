@@ -31,8 +31,10 @@
     <Text Include="ProductDatabase">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="Reciepts">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Receipts">
       <Filter>Source Files</Filter>
-    </Text>
+    </None>
   </ItemGroup>
 </Project>
