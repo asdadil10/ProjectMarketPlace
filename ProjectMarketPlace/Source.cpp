@@ -81,6 +81,7 @@ void Loginmainlogic()
 				break;
 		}
 		checkout(products);
+		_getch();
 	}
 }
 void Vieweronlylogic()

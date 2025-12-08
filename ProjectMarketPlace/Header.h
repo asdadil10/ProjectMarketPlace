@@ -95,6 +95,7 @@ void LoginOrRegister(user* currentUser)
 		cout << "Are you a Seller or Buyer? :";
 		string accType;
 	reg:
+		cin.ignore();
 		cin >> accType;
 		if (accType == "Seller" || accType == "seller")
 			currentUser->acctype = true;
@@ -221,6 +222,11 @@ void loadProducts(product* products, int* productCount) {
 
 void addtocart(product* selectedProduct, int quantity)
 {
+	if (cartIndex > 99)
+	{
+		cout << "Error! Max ammount of items in cart reached!";
+		return;
+	}
 	cart[cartIndex] = *selectedProduct; // For simplicity, adding to first position
 	cart[cartIndex].quantity = quantity;
 	cart[cartIndex].id = selectedProduct->id;
