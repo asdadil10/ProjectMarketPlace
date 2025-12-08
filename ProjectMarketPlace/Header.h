@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-
+#include <conio.h>
 struct user {
 	std::string phone;
 	std::string name;
@@ -77,15 +77,19 @@ void LoginOrRegister(user* currentUser)
 {
 	DisplayHeader();
 	cout << "Please login or register to continue.\n1.Register\n2.Login\n";
-	int choice;
-	cin >> choice;
-	while (choice != 1 && choice != 2)
+	bool isvalidchoice = false;
+	char choice;
+	choice = _getch();
+	while (choice != '1' && choice != '2')
 	{
-		DisplayHeader();
-		cout << "Invalid choice! Please enter 1 to Register or 2 to Login.\n";
-		cin >> choice;
+		if (!isvalidchoice) 
+		{
+			cout << "Invalid Choice! Try Again! :";
+			isvalidchoice = true;
+		}
+		choice = _getch();
 	}
-	if (choice == 1)
+	if (choice == '1')
 	{
 		cout << "Registering new user...\n";
 		cout << "Are you a Seller or Buyer? :";
@@ -124,7 +128,7 @@ void LoginOrRegister(user* currentUser)
 		DisplayHeader();
 		cout << "Registration Successful! You can now login with your credentials.\n";
 	}
-	else if (choice == 2)
+	else if (choice == '2')
 	{
 		cout << "Logging in...\n";
 		string phoneInput, passwordInput, username;
@@ -194,8 +198,12 @@ void loadProducts(product* products, int* productCount) {
 	database.open("ProductDatabase", ios::in);
 	*productCount = 0;
 	if (database.is_open()) {
-		while (!database.eof() && *productCount < MAX_PRODUCTS) {
-			getline(database, products[*productCount].name);
+		string name;
+		while (!database.eof() && *productCount < MAX_PRODUCTS) 
+		{
+			getline(database, name);
+			if (name.empty()) break; // To avoid reading empty lines at the end due to eof()
+			products[*productCount].name = name;
 			getline(database, products[*productCount].description);
 			database >> products[*productCount].price;
 			database >> products[*productCount].quantity;
@@ -228,14 +236,14 @@ bool viewlist(product* products, int* productCount)
 	}
 	return *productCount > 0;
 }
-void selectproduct(product* products, int* productCount)
+void selectproduct(product* products, int* productCount,bool isviewonly)
 {
 	int choice;
 	cout << "Enter the number of the product you want to view details for: ";
 	cin >> choice;
 	while (choice < 1 || choice > *productCount) {
 		viewlist(products, productCount);
-		cout << "Invalid choice!\n";
+		cout << "Invalid Choice! Try Again!\n";
 		cout << "Enter the number of the product you want to view details for: ";
 		cin >> choice;
 	}
@@ -250,9 +258,17 @@ void selectproduct(product* products, int* productCount)
 		cout << "This product is currently out of stock.\n";
 		return;
 	}
-	cout << "Do you want to add this product to your cart? (yes/no): ";
+	if (!isviewonly) {
+		cout << "Do you want to add this product to your cart? (yes/no): ";
+	}
+	else
+		return;
 	string purchaseChoice;
 	cin >> purchaseChoice;
+	if (purchaseChoice != "yes" && purchaseChoice != "no") {
+		cout << "Invalid choice! Please enter 'yes' or 'no': ";
+		cin >> purchaseChoice;
+	}
 	if (purchaseChoice == "yes" && selectedProduct.quantity > 0) {
 		int quantity;
 		cout << "Enter quantity: ";
