@@ -23,14 +23,6 @@ inline void Welcome(string* userName)
 	DisplayHeader();
 	cout << "Welcome to the Market Place, " << *userName << "!" << endl;
 }
-bool IsValidCNIC(const string* cnic)
-{
-	if (cnic->length() != 13) return false;
-	for (char c : *cnic) {
-		if (!isdigit(c)) return false;
-	}
-	return true;
-}
 bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype)
 {
 	fstream database;
