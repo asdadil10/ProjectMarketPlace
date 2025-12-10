@@ -1,5 +1,24 @@
 #include "Header.h"
 bool isvalidchoice = false;
+void checkdb() //check if db files exist else create them
+{
+	fstream database;
+	database.open("Userdb.txt", ios::in);
+	if (!database.is_open()) {
+		database.open("Userdb.txt", ios::out);
+	}
+	database.close();
+	database.open("Productdb.txt", ios::in);
+	if (!database.is_open()) {
+		database.open("Productdb.txt", ios::out);
+	}
+	database.close();
+	database.open("Receiptsdb.txt", ios::in);
+	if (!database.is_open()) {
+		database.open("Receiptsdb.txt", ios::out);
+	}
+	database.close();
+}
 void Loginmainlogic()
 {
 	user User;
@@ -136,6 +155,7 @@ void Vieweronlylogic()
 		Loginmainlogic();
 }
 int main() {
+	checkdb();
 	while (true) 
 	{
 		DisplayHeader();
