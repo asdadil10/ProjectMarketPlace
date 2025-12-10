@@ -10,13 +10,12 @@ struct user {
 	std::string password;
 	bool acctype = false; // true for seller, false for buyer
 };
-
 using namespace std;
 
 inline void DisplayHeader()
 {
 	system("cls");
-	cout << "===== Project Market Place =====" << endl;
+	cout <<  "===== Project Market Place ====="  << endl;
 }
 inline void Welcome(string* userName)
 {
@@ -229,8 +228,12 @@ bool viewlist(product* products, int* productCount)
 {
 	DisplayHeader();
 	cout << "Available Products:\n";
-	for (int i = 0; i < *productCount; i++) {
-		cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Quantity: " << products[i].quantity << "\n";
+	for (int i = 0; i < *productCount; i++) 
+	{
+		if (products[i].quantity != 0)
+			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Quantity: " << products[i].quantity << "\n";
+		else
+			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Out of Stock\n";
 	}
 	return *productCount > 0;
 }
@@ -317,10 +320,10 @@ void checkout(product* products)
 		return;
 	}
 	double total = 0.0;
-	cout << "Checkout:\n";
+	cout << "\nCheckout:\n";
 	for (int i = 0; i < cartIndex; i++) {
 		double itemTotal = cart[i].price * cart[i].quantity;
-		cout << cart[i].name << " - PKR " << cart[i].price << " x " << cart[i].quantity << " = PKR " << itemTotal << "\n";
+		cout << i+1 << ". " << cart[i].name << " - PKR " << cart[i].price << " x " << cart[i].quantity << " = PKR " << itemTotal << "\n";
 		products[cart[i].id].quantity -= cart[i].quantity;
 		total += itemTotal;
 	}
@@ -333,7 +336,7 @@ void checkout(product* products)
 	cout << "Thank you for your purchase!\n";
 	// Clear the cart after checkout
 	updateproducts(products);
-	addrecipts(products,&address);
+	addrecipts(products, &address);
 	cartIndex = 0;
 }
 
@@ -356,5 +359,60 @@ void getordersforsellers(user* currentUser)
 	}
 	else {
 		cout << "Error opening receipt file!\n";
+	}
+}
+void selleritems(user* currentUser)
+{
+	product products[MAX_PRODUCTS];
+	int productCount = 0;
+	int localproductCount = 0;
+	loadProducts(products, &productCount); // Load all products and update productCount
+	cout << "Your Products:\n";
+	for (int i = 0; i < productCount; i++) {
+		if (products[i].sellerPhone == currentUser->phone) {
+			localproductCount++;
+			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Quantity: " << products[i].quantity << "\n";
+		}
+	}
+	cout << "\n";
+	cout << "Do you want to update the quantity of any product? (Y/N): ";
+	bool isvalidchoice = false;
+	char updateChoice;
+	updateChoice = _getch();
+	while (updateChoice != 'Y' && updateChoice != 'y' && updateChoice != 'N' && updateChoice != 'n')
+	{
+		if (!isvalidchoice)
+		{
+			cout << "Invalid Choice! Try Again! :\n";
+			isvalidchoice = true;
+		}
+		updateChoice = _getch();
+	}
+	if (updateChoice == 'Y' || updateChoice == 'y')
+	{
+		int choice;
+		cout << "Enter the number of the product you want to update: ";
+		cin >> choice;
+		while (choice < 1 || choice > localproductCount) {
+			cout << "Invalid Choice! ";
+			cout << "Enter the number of the product you want to update: ";
+		}
+		localproductCount = 0;
+		int newQuantity;
+		cout << "Enter the new quantity: ";
+		cin >> newQuantity;
+		for(int i = 0; i < productCount; i++) {
+			if (products[i].sellerPhone == currentUser->phone) 
+			{
+				localproductCount++;
+				if (localproductCount == choice)
+				{
+					products[i].quantity = newQuantity;
+					updateproducts(products);
+					cout << "Product quantity updated successfully!\n";
+					return;
+				}
+			}
+		}
 	}
 }

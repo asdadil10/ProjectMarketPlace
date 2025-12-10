@@ -10,11 +10,11 @@ void Loginmainlogic()
 	home:
 		DisplayHeader();
 		cout << "======== Seller Menu =======\n";
-		cout << "Do want to :\n1.Add a new item to sell\n2.View Items oredered from your store";
+		cout << "Do want to :\n1.Add a new item to sell\n2.View Items oredered from your store\n3.View your items";
 		isvalidchoice = false;
 		char choice;
 		choice = _getch();
-		while (choice < '1' || choice > '2')
+		while (choice < '1' || choice > '3')
 		{
 			if (!isvalidchoice)
 			{
@@ -27,6 +27,8 @@ void Loginmainlogic()
 			createProduct(&User);
 		else if (choice == '2')
 			getordersforsellers(&User);
+		else if (choice == '3')
+			selleritems(&User);
 		cout << "Do you want to go home! (Y) or logout? (N) or exit(x)?: ";
 		isvalidchoice = false;
 		char homeChoice;
@@ -117,7 +119,7 @@ void Vieweronlylogic()
 			cout << "No products available at the moment!\n";
 		break;
 	}
-	cout << "Do you want to login or register to shop or sell? (Y) or go to main menu (N): \n";
+	cout << "\nDo you want to login or register to shop or sell (Y)? or go to main menu (N): \n";
 	isvalidchoice = false;
 	char loginChoice;
 	loginChoice = _getch();
@@ -129,28 +131,19 @@ void Vieweronlylogic()
 			isvalidchoice = true;
 		}
 		loginChoice = _getch();
-
-		if (loginChoice == 'Y' || loginChoice == 'y')
-		{
-			Loginmainlogic();
-			break;
-		}
-		else if (loginChoice == 'N' || loginChoice == 'n')
-		{
-			break;
-		}
 	}
-
+	if (loginChoice == 'Y' || loginChoice == 'y')
+		Loginmainlogic();
 }
 int main() {
 	while (true) 
 	{
 		DisplayHeader();
-		cout << "Do, you want to login(Y/y) \nor just view products(N/n) \nor exit(x)? : \n";
+		cout << "1.Login \n2.View products without login \n0.exit \n";
 		isvalidchoice = false;
 		char viewChoice;
 		viewChoice = _getch();
-		while (viewChoice != 'Y' && viewChoice != 'y' && viewChoice != 'N' && viewChoice != 'n' && viewChoice != 'X' && viewChoice != 'x')
+		while (viewChoice != '1' && viewChoice != '2' && viewChoice != '0')
 		{
 			if (!isvalidchoice)
 			{
@@ -159,11 +152,11 @@ int main() {
 			}
 			viewChoice = _getch();
 		}
-		if (viewChoice == 'Y' || viewChoice == 'y')
+		if (viewChoice == '1')
 			Loginmainlogic();
-		else if (viewChoice == 'N' || viewChoice == 'n')
+		else if (viewChoice == '2')
 			Vieweronlylogic();
-		else if (viewChoice == 'X' || viewChoice == 'x')
+		else if (viewChoice == '0')
 			break;
 	}
 	return 0;
