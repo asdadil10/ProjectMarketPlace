@@ -26,7 +26,7 @@ inline void Welcome(string* userName)
 bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype)
 {
 	fstream database;
-	database.open("UserDatabase", ios::in);
+	database.open("Userdb.txt", ios::in);
 	if (database.is_open()) {
 		string line;
 		while (getline(database, line))
@@ -54,7 +54,7 @@ bool CheckDatabaseForUser(const string* phone, const string* password, string* u
 inline void WritetoDatabase(user* newUser)
 {
 	fstream database;
-	database.open("UserDatabase", ios::out | ios::app);
+	database.open("Userdb.txt", ios::out | ios::app);
 	if (database.is_open()) {
 		database << newUser->phone << "\n" << newUser->name << "\n" << newUser->password << "\n" << newUser->acctype << "\n";
 		database.close();
@@ -194,7 +194,7 @@ void createProduct(user* currentUser) {
 	newProduct.sellerPhone = currentUser->phone; // Associate product with seller's phone number
 	// Save the product to the database
 	fstream database;
-	database.open("ProductDatabase", ios::out | ios::app);
+	database.open("Productdb.txt", ios::out | ios::app);
 	if (database.is_open()) {
 		database << newProduct.name << "\n" << newProduct.description << "\n" << newProduct.price << "\n" << newProduct.quantity << "\n" << newProduct.sellerPhone << "\n";
 		database.close();
@@ -207,7 +207,7 @@ void createProduct(user* currentUser) {
 void loadProducts(product* products, int* productCount) {
 	// Function to load products from the database
 	fstream database;
-	database.open("ProductDatabase", ios::in);
+	database.open("Productdb.txt", ios::in);
 	*productCount = 0;
 	if (database.is_open()) {
 		string name;
@@ -303,7 +303,7 @@ void selectproduct(product* products, int* productCount,bool isviewonly)
 void updateproducts(product* products)
 {
 	fstream database;
-	database.open("ProductDatabase", ios::out | ios::trunc);
+	database.open("Productdb.txt", ios::out | ios::trunc);
 	if (database.is_open()) {
 		for (int i = 0; i < MAX_PRODUCTS; i++) {
 			if (products[i].name.empty()) break; // Stop if no more products
@@ -318,7 +318,7 @@ void updateproducts(product* products)
 void addrecipts(product* products,string*address)
 {
 	fstream receiptFile;
-	receiptFile.open("Receipts", ios::out | ios::app);
+	receiptFile.open("Receiptsdb.txt", ios::out | ios::app);
 	if (receiptFile.is_open()) {
 		receiptFile << "New Receipt:\n";
 		for (int i = 0; i < cartIndex; i++) {
@@ -362,7 +362,7 @@ void checkout(product* products)
 void getordersforsellers(user* currentUser)
 {
 	fstream receiptFile;
-	receiptFile.open("Receipts", ios::in);
+	receiptFile.open("Receiptsdb.txt", ios::in);
 	if (receiptFile.is_open()) 
 	{
 		string line;

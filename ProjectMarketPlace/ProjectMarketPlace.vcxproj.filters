@@ -25,15 +25,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="UserDatabase">
+    <Text Include="Userdb.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="ProductDatabase">
+    <Text Include="Productdb.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Receipts">
+    <None Include="Receiptsdb.txt">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
