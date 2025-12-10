@@ -86,28 +86,32 @@ void LoginOrRegister(user* currentUser)
 		cout << "Registering new user...\n";
 		cout << "Are you a Seller or Buyer? :";
 		string accType;
-	reg:
-		cin.ignore();
-		cin >> accType;
-		if (accType == "Seller" || accType == "seller")
-			currentUser->acctype = true;
-		else if(accType == "Buyer" || accType == "buyer")
-			currentUser->acctype = false;
-		else
-		{
-			DisplayHeader();
-			cout << "Invalid account type! Please enter 'Seller' or 'Buyer'.\n";
-			goto reg;
-		}
-	registering:
-		cout << "Enter Phone Number: +92 ";
-		cin >> currentUser->phone;
-		if (currentUser->phone.length() != 10)
-		{
-			DisplayHeader();
-			cout << "Invalid Phone Number! Please try again.\n";
-			goto registering;
-		}
+		do {
+			cin.ignore();
+			cin >> accType;
+			if (accType == "Seller" || accType == "seller")
+				currentUser->acctype = true;
+			else if (accType == "Buyer" || accType == "buyer")
+				currentUser->acctype = false;
+			else
+			{
+				DisplayHeader();
+				cout << "Invalid account type! Please enter 'Seller' or 'Buyer'.\n";
+				continue;
+			}
+			break;
+		} while (true);
+		do {
+			cout << "Enter Phone Number: +92 ";
+			cin >> currentUser->phone;
+			if (currentUser->phone.length() != 10)
+			{
+				DisplayHeader();
+				cout << "Invalid Phone Number! Please try again.\n";
+				continue;
+			}
+			break;
+		} while (true);
 		cout << "Enter username: ";
 		{
 			string line;
@@ -119,32 +123,34 @@ void LoginOrRegister(user* currentUser)
 		cin >> currentUser->password;
 		WritetoDatabase(currentUser);
 		DisplayHeader();
-		cout << "Registration Successful! You can now login with your credentials.\n";
+		cout << "Registration Successful! You are now logged into your account.\n";
 	}
 	else if (choice == '2')
 	{
 		cout << "Logging in...\n";
 		string phoneInput, passwordInput, username;
-	login:
-		cout << "Enter User Phone Number: +92 ";
-		cin >> phoneInput;
-		cout << "Enter Password: ";
-		cin >> passwordInput;
-		if (CheckDatabaseForUser(&phoneInput, &passwordInput, &username, &currentUser->acctype))
-		{
-			cout << "Login successful!\n";
-			currentUser->name = username;
-			currentUser->phone = phoneInput;
-			phoneInput.clear();
-			passwordInput.clear();
-			Welcome(&username);
-		}
-		else
-		{
-			DisplayHeader();
-			cout << "Invalid Phone Number or Password! Please try again.\n";
-			goto login;
-		}
+		do {
+			cout << "Enter User Phone Number: +92 ";
+			cin >> phoneInput;
+			cout << "Enter Password: ";
+			cin >> passwordInput;
+			if (CheckDatabaseForUser(&phoneInput, &passwordInput, &username, &currentUser->acctype))
+			{
+				cout << "Login successful!\n";
+				currentUser->name = username;
+				currentUser->phone = phoneInput;
+				phoneInput.clear();
+				passwordInput.clear();
+				Welcome(&username);
+			}
+			else
+			{
+				DisplayHeader();
+				cout << "Invalid Phone Number or Password! Please try again.\n";
+				continue;
+			}
+			break;
+		} while (true);
 	}
 }
 const int MAX_PRODUCTS = 100;
@@ -205,10 +211,9 @@ void loadProducts(product* products, int* productCount) {
 	*productCount = 0;
 	if (database.is_open()) {
 		string name;
-		while (!database.eof() && *productCount < MAX_PRODUCTS) 
+		while (getline(database, name) && *productCount < MAX_PRODUCTS) //removing eof() check to prevent reading empty lines
 		{
-			getline(database, name);
-			if (name.empty()) break; // To avoid reading empty lines at the end due to eof()
+			if (name.empty()) break;// To avoid reading empty lines at the end due to eof()
 			products[*productCount].name = name;
 			getline(database, products[*productCount].description);
 			database >> products[*productCount].price;
