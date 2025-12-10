@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdlib>
 #include <fstream>
 #include <string>
@@ -15,12 +16,12 @@ using namespace std;
 inline void DisplayHeader()
 {
 	system("cls");
-	cout <<  "===== Project Market Place ====="  << endl;
+	cout <<  "========= Project Market Place ========="  << endl;
 }
 inline void Welcome(string* userName)
 {
 	DisplayHeader();
-	cout << "Welcome to the Market Place, " << *userName << "!" << endl;
+	cout << "Welcome to the Market Place, " << *userName << " !, " << "Press any key to continue !" << endl;
 }
 bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype)
 {
@@ -168,10 +169,23 @@ void createProduct(user* currentUser) {
 	getline(cin, newProduct.description);
 	cout << "Enter product price: PKR ";
 	cin >> newProduct.price;
+	while (cin.fail() || newProduct.price < 0)
+	{
+		cin.clear(); // clear the fail state
+		cin.ignore();
+		cout << "Invalid price entered. Please enter a valid positive number : \n";
+		cin >> newProduct.price;
+	}
 	cout << "Enter product quantity: ";
 	cin >> newProduct.quantity;
-	newProduct.sellerPhone = currentUser->phone;
-
+	while (cin.fail()||newProduct.quantity<=0)
+	{
+		cin.clear(); // clear the fail state
+		cin.ignore();
+		cout << "Invalid quantity entered. Please enter a valid positive integer : \n";
+		cin >> newProduct.quantity;
+	}
+	newProduct.sellerPhone = currentUser->phone; // Associate product with seller's phone number
 	// Save the product to the database
 	fstream database;
 	database.open("ProductDatabase", ios::out | ios::app);
