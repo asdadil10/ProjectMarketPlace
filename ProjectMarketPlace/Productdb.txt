@@ -1,7 +1,7 @@
 Gaming PC
 I5 6th Gen, 16GB RAM, 512GB SSD
 25000
-8
+1
 1234567890
 Mouse
 Wireless Mouse, RGB Lighting
@@ -41,5 +41,5 @@ External Hard Drive
 adil's special cookies
 cookies made with hate
 123
--1
+0
 1234567899
