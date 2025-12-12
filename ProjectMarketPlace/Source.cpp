@@ -32,11 +32,11 @@ void Loginmainlogic()
 		{
 			DisplayHeader();
 			cout << "======== Seller Menu =======\n";
-			cout << "Do want to :\n1.Add a new item to sell\n2.View Items oredered from your store\n3.View your items";
+			cout << "Do want to :\n1. Add a new item to sell\n2. View Items oredered from your store\n3. View your items\n0. Logout\n";
 			isvalidchoice = false;
 			char choice;
 			choice = _getch();
-			while (choice < '1' || choice > '3')
+			while (choice < '0' || choice > '3')
 			{
 				if (!isvalidchoice)
 				{
@@ -51,23 +51,8 @@ void Loginmainlogic()
 				getordersforsellers(&User);
 			else if (choice == '3')
 				selleritems(&User);
-			cout << "Do you want to go home! (Y) or logout? (N) or exit(x)?: ";
-			isvalidchoice = false;
-			char homeChoice;
-			homeChoice = _getch();
-			while (homeChoice != 'Y' && homeChoice != 'y' && homeChoice != 'N' && homeChoice != 'n' && homeChoice != 'X' && homeChoice != 'x')
-			{
-				if (!isvalidchoice)
-				{
-					cout << "Invalid Choice! Try Again! :\n";
-					isvalidchoice = true;
-				}
-				homeChoice = _getch();
-			}
-			if (homeChoice == 'N' || homeChoice == 'n')
+			else if (choice == '0')
 				break;
-			else if (homeChoice == 'X' || homeChoice == 'x')
-				exit(0);
 		}
 	}
 	else // Buyer
@@ -140,7 +125,7 @@ void Vieweronlylogic()
 			cout << "No products available at the moment!\n";
 		break;
 	}
-	cout << "\nDo you want to login or register to shop or sell (Y)? or go to main menu (N): \n";
+	cout << "\nDo you want to login (Y)? or go to main menu (N): \n";
 	isvalidchoice = false;
 	char loginChoice;
 	loginChoice = _getch();
@@ -161,7 +146,7 @@ int main() {
 	while (true) 
 	{
 		DisplayHeader();
-		cout << "1.Login \n2.View products without login \n0.exit \n";
+		cout << "1. Login \n2. View products without login \n0. exit \n";
 		isvalidchoice = false;
 		char viewChoice;
 		viewChoice = _getch();
@@ -228,7 +213,7 @@ inline void WritetoDatabase(user* newUser)
 void LoginOrRegister(user* currentUser)
 {
 	DisplayHeader();
-	cout << "Please login or register to continue.\n1.Register\n2.Login\n";
+	cout << "Please login or register to continue.\n1. Login\n2. Register\n";
 	bool isvalidchoice = false;
 	char choice;
 	choice = _getch();
@@ -241,7 +226,7 @@ void LoginOrRegister(user* currentUser)
 		}
 		choice = _getch();
 	}
-	if (choice == '1')
+	if (choice == '2')
 	{
 		cout << "Registering new user...\n";
 		cout << "Are you a Seller or Buyer? :";
@@ -285,7 +270,7 @@ void LoginOrRegister(user* currentUser)
 		DisplayHeader();
 		cout << "Registration Successful! You are now logged into your account.\n";
 	}
-	else if (choice == '2')
+	else if (choice == '1')
 	{
 		cout << "Logging in...\n";
 		string phoneInput, passwordInput, username;
@@ -344,7 +329,7 @@ void createProduct(user* currentUser) {
 	fstream database;
 	database.open("Productdb.txt", ios::out | ios::app);
 	if (database.is_open()) {
-		database << newProduct.name << "\n" << newProduct.description << "\n" << newProduct.price << "\n" << newProduct.quantity << "\n" << newProduct.sellerPhone << "\n";
+		database << newProduct.name << "\n" << newProduct.description << "\n" << fixed << newProduct.price << "\n" << newProduct.quantity << "\n" << newProduct.sellerPhone << "\n";
 		database.close();
 		cout << "Product created successfully!\n";
 	}
@@ -398,7 +383,7 @@ bool viewlist(product* products, int* productCount)
 	for (int i = 0; i < *productCount; i++)
 	{
 		if (products[i].quantity != 0)
-			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Quantity: " << products[i].quantity << "\n";
+			cout << i + 1 << ". " << products[i].name << " - PKR " <<fixed<<setprecision(1)<< products[i].price << " - Quantity: " << products[i].quantity << "\n";
 		else
 			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Out of Stock\n";
 	}
@@ -618,7 +603,7 @@ void selleritems(user* currentUser)
 	for (int i = 0; i < productCount; i++) {
 		if (products[i].sellerPhone == currentUser->phone) {
 			localproductCount++;
-			cout << i + 1 << ". " << products[i].name << " - PKR " << products[i].price << " - Quantity: " << products[i].quantity << "\n";
+			cout << i + 1 << ". " << products[i].name << " - PKR " << fixed << products[i].price << " - Quantity: " << products[i].quantity << "\n";
 		}
 	}
 	cout << "\n";
