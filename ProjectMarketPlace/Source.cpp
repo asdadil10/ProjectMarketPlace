@@ -517,7 +517,7 @@ void fulfillorders(user* currentUser, int* linecount) //line count is total orde
 		{
 			getline(receiptFile, line);
 
-			if (line.find(currentUser->phone) != string::npos) //find returns npos if not found
+			if (line.find(currentUser->phone) != string::npos&& line.find("Delivered") == string::npos) //find returns npos if not found
 			{
 				orderToFulfill = line;
 				choicecount++;
@@ -565,7 +565,7 @@ void getordersforsellers(user* currentUser)
 		cout << "Orders for your products:\n";
 		while (getline(receiptFile, line))
 		{
-			if (line.find(currentUser->phone) != string::npos)
+			if ((line.find(currentUser->phone) != string::npos)&& line.find("Delivered") == string::npos) //skip delivered
 			{
 				linecount++;
 				cout << linecount << ". " << line << "\n";
