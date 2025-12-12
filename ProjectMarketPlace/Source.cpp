@@ -62,6 +62,7 @@ void Loginmainlogic()
 		loadProducts(products, &productCount);
 		while (true)
 		{
+			_getch();
 			DisplayHeader();
 			cout << "======== Buyer Menu =======\n";
 			cout << "Available Products:\n";
@@ -576,22 +577,27 @@ void getordersforsellers(user* currentUser)
 		cout << "Error opening receipt file!\n";
 	}
 	cout << "\n";
-	cout << "Do you want to fulfill any orders? (Y/N): ";
-	bool isvalidchoice = false;
-	char fulfillChoice;
-	fulfillChoice = _getch();
-	while (fulfillChoice != 'Y' && fulfillChoice != 'y' && fulfillChoice != 'N' && fulfillChoice != 'n')
+	if (linecount)
 	{
-		if (!isvalidchoice)
-		{
-			cout << "Invalid Choice! Try Again! :\n";
-			isvalidchoice = true;
-		}
+		cout << "Do you want to fulfill any orders? (Y/N): ";
+		bool isvalidchoice = false;
+		char fulfillChoice;
 		fulfillChoice = _getch();
+		while (fulfillChoice != 'Y' && fulfillChoice != 'y' && fulfillChoice != 'N' && fulfillChoice != 'n')
+		{
+			if (!isvalidchoice)
+			{
+				cout << "Invalid Choice! Try Again! :\n";
+				isvalidchoice = true;
+			}
+			fulfillChoice = _getch();
+		}
+		if (fulfillChoice == 'Y' || fulfillChoice == 'y')
+			fulfillorders(currentUser, &linecount);
 	}
-	if (fulfillChoice == 'Y' || fulfillChoice == 'y')
-		fulfillorders(currentUser, &linecount);
-
+	else
+		cout << "No Items Ordered from your store, Press any key to continue";
+	_getch();
 }
 void selleritems(user* currentUser)
 {
