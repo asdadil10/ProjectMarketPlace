@@ -1,5 +1,32 @@
 #include "Header.h"
 
+int main() {
+	checkdb();
+	while (true)
+	{
+		DisplayHeader();
+		cout << "1. Login \n2. View products without login \n0. exit \n";
+		isvalidchoice = false;
+		char viewChoice;
+		viewChoice = _getch();
+		while (viewChoice != '1' && viewChoice != '2' && viewChoice != '0')
+		{
+			if (!isvalidchoice)
+			{
+				cout << "Invalid Choice! Try Again! :";
+				isvalidchoice = true;
+			}
+			viewChoice = _getch();
+		}
+		if (viewChoice == '1')
+			Loginmainlogic();
+		else if (viewChoice == '2')
+			Vieweronlylogic();
+		else if (viewChoice == '0')
+			break;
+	}
+	return 0;
+}
 bool isvalidchoice = false;
 
 void checkdb() //check if db files exist else create them
@@ -142,33 +169,7 @@ void Vieweronlylogic()
 	if (loginChoice == 'Y' || loginChoice == 'y')
 		Loginmainlogic();
 }
-int main() {
-	checkdb();
-	while (true) 
-	{
-		DisplayHeader();
-		cout << "1. Login \n2. View products without login \n0. exit \n";
-		isvalidchoice = false;
-		char viewChoice;
-		viewChoice = _getch();
-		while (viewChoice != '1' && viewChoice != '2' && viewChoice != '0')
-		{
-			if (!isvalidchoice)
-			{
-				cout << "Invalid Choice! Try Again! :";
-				isvalidchoice = true;
-			}
-			viewChoice = _getch();
-		}
-		if (viewChoice == '1')
-			Loginmainlogic();
-		else if (viewChoice == '2')
-			Vieweronlylogic();
-		else if (viewChoice == '0')
-			break;
-	}
-	return 0;
-}
+
 bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype)
 {
 	fstream database;
