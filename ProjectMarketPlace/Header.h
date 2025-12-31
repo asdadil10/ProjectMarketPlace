@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <iomanip>
 #include <limits>
+#include <vector>
 
 struct User 
 {
@@ -15,7 +16,7 @@ struct User
 	bool acctype = false; // true for seller, false for buyer
 };
 
-struct product
+struct Product
 {
 	int id;
 	std::string name;
@@ -26,34 +27,35 @@ struct product
 };
 
 const int MAX_PRODUCTS = 100;
-product cart[MAX_PRODUCTS];
-int cartIndex = 0;
-using namespace std;
+extern Product cart[MAX_PRODUCTS];
+extern int cartIndex;
 
 inline void DisplayHeader()
 {
 	system("cls");
-	cout <<  "========= Project Market Place ========="  << endl;
+	std::cout <<  "========= Project Market Place ========="  << std::endl;
 }
-inline void Welcome(string* UserName)
+
+inline void Welcome(const std::string* userName)
 {
 	DisplayHeader();
-	cout << "Welcome to the Market Place, " << *UserName << " !, " << "Press any key to continue !" << endl;
+	std::cout << "Welcome to the Market Place, " << *userName << " !, " << "Press any key to continue !" << std::endl;
 }
-void getordersforsellers(User* currentUser);
-void selleritems(User* currentUser);
-void fulfillorders(User* currentUser, int* linecount); //line count is total orders for that seller
-void checkout(product* products);
-void addrecipts(product* products, string* address);
-void updateproducts(product* products);
-void selectproduct(product* products, int* productCount, bool isviewonly);
-bool viewlist(product* products, int* productCount);
-void addtocart(product* selectedProduct, int quantity);
-void loadProducts(product* products, int* productCount);
-void createProduct(User* currentUser);
+
+void GetOrdersForSellers(User* currentUser);
+void SellerItems(User* currentUser);
+void FulfillOrders(User* currentUser, int* lineCount); 
+void Checkout(Product* products);
+void AddReceipts(Product* products, std::string* address);
+void UpdateProducts(Product* products);
+void SelectProduct(Product* products, int* productCount, bool isViewOnly);
+bool ViewList(Product* products, int* productCount);
+void AddToCart(Product* selectedProduct, int quantity);
+void LoadProducts(Product* products, int* productCount);
+void CreateProduct(User* currentUser);
 void LoginOrRegister(User* currentUser);
-inline void WritetoDatabase(User* newUser);
-bool CheckDatabaseForUser(const string* phone, const string* password, string* Username, bool* acctype);
-void Vieweronlylogic();
-void Loginmainlogic();
-void checkdb(); //check if db files exist else create them
+void WriteToDatabase(User* newUser);
+bool CheckDatabaseForUser(const std::string* phone, const std::string* password, std::string* username, bool* accType);
+void ViewerOnlyLogic();
+void LoginMainLogic();
+void CheckDatabase();
