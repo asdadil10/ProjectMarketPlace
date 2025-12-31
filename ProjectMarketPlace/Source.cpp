@@ -1,17 +1,24 @@
     #include "Header.h"
     bool isvalidchoice = false;
+	using std::cout;
+	using std::cin;
 
-	int main() 
+	int main() // entrypoint
 	{
-		checkdb();
+		checkdb();  // Check if the databases exist if not create new.
 		while (true)
 		{
-			DisplayHeader();
-			cout << "1. Login \n2. View products without login \n0. exit \n";
-			isvalidchoice = false;
+			DisplayHeader();   // take this as cls and header 
+
+			cout << "1. Login \n"
+				<< "2. View products without login \n"
+				<< "0. exit \n";
+
+			// getting valid choices
+			isvalidchoice = false;  
 			char viewChoice;
 			viewChoice = _getch();
-			while (viewChoice != '1' && viewChoice != '2' && viewChoice != '0')
+			while (viewChoice < '0' || viewChoice > '2')
 			{
 				if (!isvalidchoice)
 				{
@@ -20,20 +27,30 @@
 				}
 				viewChoice = _getch();
 			}
-			if (viewChoice == '1')
-				Loginmainlogic();
-			else if (viewChoice == '2')
-				Vieweronlylogic();
-			else if (viewChoice == '0')
+
+			// do what User says.
+			switch (viewChoice)
+			{
+			case '1':
+				Loginmainlogic(); // Main Function. User and Seller Functionalities
 				break;
+			case '2':
+				Vieweronlylogic(); // For logged out viewer
+				break;
+			case '0':
+				return 0;
+			}
 		}
 		return 0;
 	}
+
+
 	void checkdb() //check if db files exist else create them
 	{
 		fstream database;
 		database.open("Userdb.txt", ios::in);
-		if (!database.is_open()) {
+		if (!database.is_open()) 
+		{
 			database.open("Userdb.txt", ios::out);
 		}
 		database.close();
@@ -48,12 +65,14 @@
 		}
 		database.close();
 	}
+
 	void Loginmainlogic()
 	{
-		user User;
-		LoginOrRegister(&User);
-		if (User.acctype) // Seller
-		{
+		User user; // create a User type user, who will be logged in.
+		LoginOrRegister(&user); //user will be logged in after this function.
+		// Now check if user is seller or buyer.
+		if (user.acctype) // Seller = true
+		{	
 			_getch();
 			while (true)
 			{
@@ -73,11 +92,11 @@
 					choice = _getch();
 				}
 				if (choice == '1')
-					createProduct(&User);
+					createProduct(&user);
 				else if (choice == '2')
-					getordersforsellers(&User);
+					getordersforsellers(&user);
 				else if (choice == '3')
-					selleritems(&User);
+					selleritems(&user);
 				else if (choice == '0')
 					break;
 			}
@@ -86,7 +105,7 @@
 		{
 			product products[MAX_PRODUCTS];
 			int productCount = 0;
-			loadProducts(products, &productCount);
+			loadProducts(products, &productCount); // Load all products and update productCount
 			while (true)
 			{
 				_getch();
@@ -170,7 +189,7 @@
 			Loginmainlogic();
 	}
 
-	bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype)
+	bool CheckDatabaseForUser(const string* phone, const string* password, string* Username, bool* acctype)
 	{
 		fstream database;
 		database.open("Userdb.txt", ios::in);
@@ -188,7 +207,7 @@
 				bool dbAccType = (line == "1") ? true : false;
 				if (dbPhone == *phone && dbPassword == *password)
 				{
-					*username = dbName;
+					*Username = dbName;
 					*acctype = dbAccType;
 					database.close();
 					return true;
@@ -198,7 +217,7 @@
 		}
 		return false;
 	}
-	inline void WritetoDatabase(user* newUser)
+	void WritetoDatabase(User* newUser)
 	{
 		fstream database;
 		database.open("Userdb.txt", ios::out | ios::app);
@@ -211,12 +230,22 @@
 			cout << "Error opening database file!\n";
 		}
 	}
-
-	void LoginOrRegister(user* currentUser)
+	bool isvalidphone(const string& phone)
+	{
+		if (phone.length() != 10)
+			return false;
+		for (int i = 0; i < 10; i++)
+		{
+			if (!isdigit(phone[i])) // if a number is not a digit
+				return false;
+		}
+		return true;
+	}
+	void LoginOrRegister(User* currentUser)
 	{
 		DisplayHeader();
 		cout << "Please login or register to continue.\n1. Login\n2. Register\n";
-		bool isvalidchoice = false;
+		isvalidchoice = false;
 		char choice;
 		choice = _getch();
 		while (choice != '1' && choice != '2')
@@ -230,44 +259,42 @@
 		}
 		if (choice == '2')
 		{
-			cout << "Registering new user...\n";
-			cout << "Are you a Seller or Buyer? :";
-			string accType;
-			do {
-				cin.ignore();
-				cin >> accType;
-				if (accType == "Seller" || accType == "seller")
-					currentUser->acctype = true;
-				else if (accType == "Buyer" || accType == "buyer")
-					currentUser->acctype = false;
-				else
-				{
-					DisplayHeader();
-					cout << "Invalid account type! Please enter 'Seller' or 'Buyer'.\n";
-					continue;
-				}
-				break;
-			} while (true);
-			do {
+			cout << "Registering new User...\n";
+			cout << "Are you a Seller (S) or Buyer? (B):";
+			char accType;
+			accType = _getch();
+			while (accType != 's' && accType != 'S' && accType != 'B' && accType != 'b')
+			{
+				DisplayHeader();
+				cerr << "Invaild account type! press 'S' for seller or 'B' for buyer :";
+				accType = _getch();
+			}
+
+			currentUser->acctype = (accType == 'B' || accType == 'b') ? false : true; // false if buyer, else true for seller.
+			//different types of validation.
+
+			while(true)
+			{
 				cout << "Enter Phone Number: +92 ";
 				cin >> currentUser->phone;
-				if (currentUser->phone.length() != 10)
+				if (!isvalidphone(currentUser->phone))
 				{
 					DisplayHeader();
 					cout << "Invalid Phone Number! Please try again.\n";
 					continue;
 				}
 				break;
-			} while (true);
-			cout << "Enter username: ";
-			{
-				string line;
-				cin.ignore();
-				getline(cin, line);
-				currentUser->name = line;
 			}
-			cout << "Enter password: ";
+
+			cout << "Enter Username: ";
+			{
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				getline(cin, currentUser->name);
+			}
+			
+			cout << "Enter password ( without spaces ) : ";
 			cin >> currentUser->password;
+
 			WritetoDatabase(currentUser);
 			DisplayHeader();
 			cout << "Registration Successful! You are now logged into your account.\n";
@@ -275,20 +302,20 @@
 		else if (choice == '1')
 		{
 			cout << "Logging in...\n";
-			string phoneInput, passwordInput, username;
+			string phoneInput, passwordInput, Username;
 			do {
 				cout << "Enter User Phone Number: +92 ";
 				cin >> phoneInput;
 				cout << "Enter Password: ";
 				cin >> passwordInput;
-				if (CheckDatabaseForUser(&phoneInput, &passwordInput, &username, &currentUser->acctype))
+				if (CheckDatabaseForUser(&phoneInput, &passwordInput, &Username, &currentUser->acctype))
 				{
 					cout << "Login successful!\n";
-					currentUser->name = username;
+					currentUser->name = Username;
 					currentUser->phone = phoneInput;
 					phoneInput.clear();
 					passwordInput.clear();
-					Welcome(&username);
+					Welcome(&Username);
 				}
 				else
 				{
@@ -300,11 +327,11 @@
 			} while (true);
 		}
 	}
-	void createProduct(user* currentUser) {
+	void createProduct(User* currentUser) {
 		// Function to create a new product
 		product newProduct;
 		cout << "Enter product name: ";
-		cin.ignore();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		getline(cin, newProduct.name);
 		while (newProduct.name.empty())
 		{
@@ -318,12 +345,12 @@
 		{
 			newProduct.description = "No Description!";
 		}
-		cout << "Enter product price: PKR ";
+		cout << "Enter product price without commas: PKR ";
 		cin >> newProduct.price;
 		while (cin.fail() || newProduct.price < 0)
 		{
 			cin.clear(); // clear the fail state
-			cin.ignore();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cout << "Invalid price entered. Please enter a valid positive number : \n";
 			cin >> newProduct.price;
 		}
@@ -332,7 +359,7 @@
 		while (cin.fail() || newProduct.quantity <= 0)
 		{
 			cin.clear(); // clear the fail state
-			cin.ignore();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cout << "Invalid quantity entered. Please enter a valid positive integer : \n";
 			cin >> newProduct.quantity;
 		}
@@ -341,7 +368,7 @@
 		fstream database;
 		database.open("Productdb.txt", ios::out | ios::app);
 		if (database.is_open()) {
-			database << newProduct.name << "\n" << newProduct.description << "\n" << fixed << newProduct.price << "\n" << newProduct.quantity << "\n" << newProduct.sellerPhone << "\n";
+			database << newProduct.name << "\n" << newProduct.description << "\n" << fixed << setprecision(2)<< newProduct.price << "\n" << newProduct.quantity << "\n" << newProduct.sellerPhone << "\n";
 			database.close();
 			cout << "Product created successfully!\n";
 		}
@@ -408,7 +435,7 @@
 		cin >> choice;
 		while (choice < 1 || choice > *productCount || cin.fail()) {
 			cin.clear();
-			cin.ignore();
+						cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			viewlist(products, productCount);
 			cout << "Invalid Choice! Try Again!\n";
 			cout << "Enter the number of the product you want to view details for: ";
@@ -497,7 +524,7 @@
 		cout << "Total Amount: PKR " << total << "\n";
 		cout << "Please enter your address to proceed.\n";
 		string address;
-		cin.ignore();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		getline(cin, address);
 		cout << "Proceeding to payment...\n";
 		cout << "Thank you for your purchase!\n";
@@ -506,7 +533,7 @@
 		addrecipts(products, &address);
 		cartIndex = 0;
 	}
-	void fulfillorders(user* currentUser, int* linecount) //line count is total orders for that seller
+	void fulfillorders(User* currentUser, int* linecount) //line count is total orders for that seller
 	{
 		fstream receiptFile, tempFile;
 		receiptFile.open("Receiptsdb.txt", ios::in);
@@ -515,14 +542,14 @@
 		{
 			int tempLineCount;
 			cout << "Enter the order line no. you want to fulfill:\n";
-			cin.ignore();
+						cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cin >> tempLineCount;
 			string line;
 			string orderToFulfill;
 			while (tempLineCount < 1 || tempLineCount > *linecount || cin.fail())
 			{
 				cout << "Invalid line number! Please enter a valid line number between 1 and " << *linecount << ":\n";
-				cin.ignore();
+							cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				cin.clear();
 				cin >> tempLineCount;
 			}
@@ -568,7 +595,7 @@
 		}
 	}
 
-	void getordersforsellers(user* currentUser)
+	void getordersforsellers(User* currentUser)
 	{
 		fstream receiptFile;
 		int linecount = 0;
@@ -613,7 +640,7 @@
 			cout << "No Items Ordered from your store, Press any key to continue";
 		_getch();
 	}
-	void selleritems(user* currentUser)
+	void selleritems(User* currentUser)
 	{
 		product products[MAX_PRODUCTS];
 		int productCount = 0;

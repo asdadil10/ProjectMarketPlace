@@ -1,12 +1,14 @@
 #pragma once
-
 #include <cstdlib>
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <conio.h>
 #include <iomanip>
-struct user {
+#include <limits>
+
+struct User 
+{
 	std::string phone;
 	std::string name;
 	std::string password;
@@ -33,14 +35,14 @@ inline void DisplayHeader()
 	system("cls");
 	cout <<  "========= Project Market Place ========="  << endl;
 }
-inline void Welcome(string* userName)
+inline void Welcome(string* UserName)
 {
 	DisplayHeader();
-	cout << "Welcome to the Market Place, " << *userName << " !, " << "Press any key to continue !" << endl;
+	cout << "Welcome to the Market Place, " << *UserName << " !, " << "Press any key to continue !" << endl;
 }
-void getordersforsellers(user* currentUser);
-void selleritems(user* currentUser);
-void fulfillorders(user* currentUser, int* linecount); //line count is total orders for that seller
+void getordersforsellers(User* currentUser);
+void selleritems(User* currentUser);
+void fulfillorders(User* currentUser, int* linecount); //line count is total orders for that seller
 void checkout(product* products);
 void addrecipts(product* products, string* address);
 void updateproducts(product* products);
@@ -48,10 +50,10 @@ void selectproduct(product* products, int* productCount, bool isviewonly);
 bool viewlist(product* products, int* productCount);
 void addtocart(product* selectedProduct, int quantity);
 void loadProducts(product* products, int* productCount);
-void createProduct(user* currentUser);
-void LoginOrRegister(user* currentUser);
-inline void WritetoDatabase(user* newUser);
-bool CheckDatabaseForUser(const string* phone, const string* password, string* username, bool* acctype);
+void createProduct(User* currentUser);
+void LoginOrRegister(User* currentUser);
+inline void WritetoDatabase(User* newUser);
+bool CheckDatabaseForUser(const string* phone, const string* password, string* Username, bool* acctype);
 void Vieweronlylogic();
 void Loginmainlogic();
 void checkdb(); //check if db files exist else create them
